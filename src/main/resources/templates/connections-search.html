@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connection Seatch</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <link rel="stylesheet" href="/webjars/jquery-ui/1.13.2/jquery-ui.min.css">
+   </head>
+<body>
+  <div class="container">
+    <h3>Connections Search</h3>
+    <button id="myButton" class="position-absolute top-0 end-0">Button</button>
+    <hr>
+    <form id="flightForm" action="/confirm" method="POST">
+      <label>Origin city:</label>
+      <select class="form-control selectpicker" name="originCity" th:id="originCity" required="required" th:nam>
+        <option value="Nothing selected">Nothing selected</option>
+        <option th:each="tempConnections : ${connections}" th:value="${tempConnections.icao}" th:text="${tempConnections.city}"></option>
+      </select>
+      <label>Destination city:</label>
+      <select class="form-control selectpicker" name="destinationCity" th:id="destinationCity" th:disabled=true>
+        <option value="Nothing selected">Please choose origin city first</option>
+      </select>
+      <hr>
+      <input type="text" th:id="flightDatepicker" name="flightDatepicker" th:name="flightDate" readonly th:disabled=true placeholder="Departure date">
+      <hr>
+      <button type="button" name="submitBtn" th:id="submitBtn" >Submit</button>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+  <script src="/webjars/jquery-ui/1.13.2/jquery-ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
+          integrity="sha384-kNhvD0tT/8oMDhZKzwr0s0N/XWzUnCkRxP5H9G7Fv1hBkiL8Pu+HLwkiG1IhMWBL"
+          crossorigin="anonymous"></script>
+</body>
+
+<script th:inline="javascript">
+
+  const originCityDropdown = document.getElementById("originCity");
+  const destinationCityDropdown = document.getElementById("destinationCity");
+  const flightDatepicker = document.getElementById("flightDatepicker");
+
+  // Update the destination city dropdown and datepicker selection when the origin city changes
+  originCityDropdown.addEventListener('change', () => {
+    updateDestinationCityDropdown();
+    updateDatepickerSelection();
+  });
+
+  // Update the datepicker selection when the destination city changes
+  destinationCityDropdown.addEventListener('change', () => {
+    updateDatepickerSelection();
+  });
+
+  // Update the destination city dropdown based on the selected origin city
+  function updateDestinationCityDropdown() {
+    destinationCityDropdown.value = "Nothing selected";
+    if (originCityDropdown.value !== "Nothing selected") {
+      destinationCityDropdown.disabled = false;
+      const originCityValue = originCityDropdown.value;
+      $.ajax({
+        url: "/connections/getDestinationAirport",
+        type: "GET",
+        data: { originCityName: originCityValue },
+        success: function(destinationCityValues) {
+          console.log(destinationCityValues);
+          destinationCityDropdown.options.length = 0;
+          destinationCityDropdown.options[0] = new Option("Nothing selected", "Nothing selected");
+          destinationCityValues.forEach((city, index) => {
+            destinationCityDropdown.options[index+1] = new Option(city.city, city.icao);
+          });
+          updateDatepickerSelection();
+        },
+        error: function(xhr, status, error) {
+          console.log("Error: " + error);
+        }
+      });
+    } else {
+      destinationCityDropdown.options.length = 0;
+      destinationCityDropdown.options[0] = new Option("Please choose origin city first", "Nothing selected");
+      destinationCityDropdown.disabled = true;
+    }
+  }
+
+  // Update the flight datepicker based on the selected origin and destination cities
+  function updateDatepickerSelection() {
+    if (destinationCityDropdown.value == "Nothing selected" || destinationCityDropdown.disabled == true) {
+      flightDatepicker.value = null;
+      flightDatepicker.disabled = true;
+    } else if (destinationCityDropdown.value !== "Nothing selected") {
+      flightDatepicker.value = null;
+      flightDatepicker.disabled = false;
+      const originCityValue = originCityDropdown.value;
+      const destinationCityValue = destinationCityDropdown.value;
+      $.ajax({
+        url: "getFlightDates",
+        type: "GET",
+        data: {
+          origAirportIcao: originCityValue,
+          destAirportIcao: destinationCityValue
+        },
+        dataType: "json",
+        success: function(response) {
+          const availableDates = response.map(date => date);
+          console.log("availableDates: " + availableDates);
+          $("#flightDatepicker").datepicker("destroy");
+          $("#flightDatepicker").datepicker({
+            minDate: 0,
+            beforeShowDay: function(date) {
+              const dmy = date.getFullYear() + "-" + ('0' + (date.getMonth()+1)).slice(-2) + "-" + ('0' + date.getDate()).slice(-2);
+              if ($.inArray(dmy, availableDates) != -1) {
+                return [true, "","Available"];
+              } else {
+                return [false,"","unAvailable"];
+              }
+            },
+            dateFormat: "yy-mm-dd"
+          });
+        },
+        error: function(xhr, status, error) {
+          console.log("Error: " + error);
+        }
+      });
+    }
+  }
+
+  $('#submitBtn').on('click', function() {
+    var originAirportIcao = $('#originCity').val();
+    var destinationAirportIcao = $('#destinationCity').val();
+    var selectedDate = $('#flightDatepicker').datepicker('getDate');
+    var flightDatepicker = $.datepicker.formatDate('yy-mm-dd', selectedDate);
+
+    if (originAirportIcao && destinationAirportIcao && flightDatepicker) {
+      console.log(`Values: ${originAirportIcao}, ${destinationAirportIcao}, ${flightDatepicker}`);
+      window.location.href = `confirm?originAirportIcao=${originAirportIcao}&destinationAirportIcao=${destinationAirportIcao}&flightDate=${flightDatepicker}`;
+    }
+  });
+
+</script>
+
+</html>
