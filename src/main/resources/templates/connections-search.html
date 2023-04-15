@@ -4,36 +4,36 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Connection Seatch</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
   <link rel="stylesheet" href="/webjars/jquery-ui/1.13.2/jquery-ui.min.css">
-   </head>
+</head>
 <body>
-  <div class="container">
-    <h3>Connections Search</h3>
-    <button id="myButton" class="position-absolute top-0 end-0">Button</button>
+<div class="container">
+  <h3>Connections Search</h3>
+  <button id="myButton" class="position-absolute top-0 end-0">Button</button>
+  <hr>
+  <form id="flightForm" action="/confirm" method="POST">
+    <label>Origin city:</label>
+    <select class="form-control selectpicker" name="originCity" th:id="originCity" required="required" th:nam>
+      <option value="Nothing selected">Nothing selected</option>
+      <option th:each="tempConnections : ${connections}" th:value="${tempConnections.icao}" th:text="${tempConnections.city}"></option>
+    </select>
+    <label>Destination city:</label>
+    <select class="form-control selectpicker" name="destinationCity" th:id="destinationCity" th:disabled=true>
+      <option value="Nothing selected">Please choose origin city first</option>
+    </select>
     <hr>
-    <form id="flightForm" action="/confirm" method="POST">
-      <label>Origin city:</label>
-      <select class="form-control selectpicker" name="originCity" th:id="originCity" required="required" th:nam>
-        <option value="Nothing selected">Nothing selected</option>
-        <option th:each="tempConnections : ${connections}" th:value="${tempConnections.icao}" th:text="${tempConnections.city}"></option>
-      </select>
-      <label>Destination city:</label>
-      <select class="form-control selectpicker" name="destinationCity" th:id="destinationCity" th:disabled=true>
-        <option value="Nothing selected">Please choose origin city first</option>
-      </select>
-      <hr>
-      <input type="text" th:id="flightDatepicker" name="flightDatepicker" th:name="flightDate" readonly th:disabled=true placeholder="Departure date">
-      <hr>
-      <button type="button" name="submitBtn" th:id="submitBtn" >Submit</button>
-    </form>
-  </div>
+    <input type="text" th:id="flightDatepicker" name="flightDatepicker" th:name="flightDate" readonly th:disabled=true placeholder="Departure date">
+    <hr>
+    <button type="button" name="submitBtn" th:id="submitBtn" >Submit</button>
+  </form>
+</div>
 
-  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
-  <script src="/webjars/jquery-ui/1.13.2/jquery-ui.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
-          integrity="sha384-kNhvD0tT/8oMDhZKzwr0s0N/XWzUnCkRxP5H9G7Fv1hBkiL8Pu+HLwkiG1IhMWBL"
-          crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+<script src="/webjars/jquery-ui/1.13.2/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
+        integrity="sha384-kNhvD0tT/8oMDhZKzwr0s0N/XWzUnCkRxP5H9G7Fv1hBkiL8Pu+HLwkiG1IhMWBL"
+        crossorigin="anonymous"></script>
 </body>
 
 <script th:inline="javascript">

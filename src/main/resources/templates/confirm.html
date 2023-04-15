@@ -1,12 +1,54 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <title>Flight times</title>
 </head>
+
 <body>
-    <p>Origin: [[${originAirportIcao}]]</p>
-    <p>Destination: [[${destinationAirportIcao}]]</p>
-    <p>Date: [[${flightDate}]]</p>
-    <p> test </p>
+
+<div class="container">
+
+    <th:block th:fragment="model(originAirportCity, destinationAirportCity, flightDate)">
+        <h3 th:text="'Flight from ' + ${originAirportCity} + ' to ' + ${destinationAirportCity} + ' on ' + ${flightDate}" ></h3>
+    </th:block>
+    <hr>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>Departure</th>
+            <th>Arrival</th>
+            <th> </th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="tempTime : ${flightTimes}">
+
+            <td th:text="${tempTime[0]}" />
+            <td th:text="${tempTime[1]}" />
+            <td>
+                <!--                <a th:href="@{/employees/showFormForUpdate(employeeId=${tempEmployee.id})}"-->
+                <a
+                        class="btn btn-primary btn-sm">
+                    Select
+                </a>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
 </body>
 </html>

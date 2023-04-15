@@ -20,6 +20,13 @@ public interface ConnectionsRepository extends JpaRepository<Connections, Intege
     @Query("SELECT c.destinationAirport FROM Connections c WHERE c.originAirport = :originAirport AND c.destinationAirport != :originAirport ORDER BY c.destinationAirport.city")
     public List<Airport> findDestAirportByOrigAirport(@Param("originAirport") Airport originAirport);
 
-    @Query("SELECT c.flightDate FROM Connections c WHERE c.originAirport = :origAirport AND c.destinationAirport = :destAirport")
-    public List<Timestamp> findDatesByOrigAndDestAirport(@Param("origAirport") Airport origAirport, @Param("destAirport") Airport destAirport);
+    @Query("SELECT c.departureDate FROM Connections c WHERE c.originAirport = :origAirport AND c.destinationAirport = :destAirport")
+    public List<Timestamp> findFlightDateByOrigAndDestAirport(@Param("origAirport") Airport origAirport, @Param("destAirport") Airport destAirport);
+
+    @Query("SELECT c FROM Connections c WHERE c.originAirport = :origAirport AND " +
+            "c.destinationAirport = :destAirport AND CAST(c.departureDate AS DATE) = CAST(:departureDay AS DATE) ORDER BY c.departureDate")
+    public List<Connections> findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(@Param("origAirport") Airport origAirport,
+                                                                                               @Param("destAirport") Airport destAirport,
+                                                                                               @Param("departureDay") String departureDay);
+
 }

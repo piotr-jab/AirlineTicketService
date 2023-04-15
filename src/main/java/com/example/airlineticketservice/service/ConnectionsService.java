@@ -14,7 +14,8 @@ public interface ConnectionsService {
 
     public List<Airport> findDestAirportByOrigAirport(Airport originAirport);
 
-    public List<Timestamp> findDatesByOrigAndDestAirport(Airport origAirport, Airport destAirport);
+    public List<Timestamp> findFlightDateByOrigAndDestAirport(Airport origAirport, Airport destAirport);
 
+    public List<Connections> findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(Airport origAirport, Airport destAirport, String departureDay);
 
 }

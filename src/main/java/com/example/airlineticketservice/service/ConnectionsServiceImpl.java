@@ -44,7 +44,16 @@ public class ConnectionsServiceImpl implements ConnectionsService{
     }
 
     @Override
-    public List<Timestamp> findDatesByOrigAndDestAirport(Airport origAirport, Airport destAirport) {
-        return connectionsRepository.findDatesByOrigAndDestAirport(origAirport, destAirport);
+    public List<Timestamp> findFlightDateByOrigAndDestAirport(Airport origAirport, Airport destAirport) {
+        return connectionsRepository.findFlightDateByOrigAndDestAirport(origAirport, destAirport);
+    }
+
+    @Override
+    public List<Connections> findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(Airport origAirport,
+                                                                                               Airport destAirport,
+                                                                                               String departureDay) {
+        return connectionsRepository.findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(origAirport,
+                destAirport,
+                departureDay);
     }
 }

@@ -21,18 +21,23 @@ public class Connections {
     @JoinColumn(name = "origin_airport")
     private Airport originAirport;
 
-    @Column(name="flight_date")
+    @Column(name="departure_date")
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    private Timestamp flightDate;
+    private Timestamp departureDate;
+
+    @Column(name="arrival_date")
+    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
+    private Timestamp arrivalDate;
 
     public Connections() {
     }
 
-    public Connections(String id, Airport destinationAirport, Airport originAirport, Timestamp flightDate) {
+    public Connections(String id, Airport destinationAirport, Airport originAirport, Timestamp departureDate, Timestamp arrivalDate) {
         this.id = id;
         this.destinationAirport = destinationAirport;
         this.originAirport = originAirport;
-        this.flightDate = flightDate;
+        this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
     }
 
     public String getId() {
@@ -59,12 +64,20 @@ public class Connections {
         this.originAirport = originAirport;
     }
 
-    public Timestamp getFlightDate() {
-        return flightDate;
+    public Timestamp getDepartureDate() {
+        return departureDate;
     }
 
-    public void setFlightDate(Timestamp flightDate) {
-        this.flightDate = flightDate;
+    public void setDepartureDate(Timestamp departureDate) {
+        this.departureDate = departureDate;
+    }
+
+    public Timestamp getArrivalDate() {
+        return arrivalDate;
+    }
+
+    public void setArrivalDate(Timestamp arrivalDate) {
+        this.arrivalDate = arrivalDate;
     }
 }
 
