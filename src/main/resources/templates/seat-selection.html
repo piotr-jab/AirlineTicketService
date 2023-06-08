@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Seat Selection</title>
+    <style>
+        .plane {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 2100px;
+            overflow-x: hidden;
+        }
+
+        .plane-fuselage {
+            width: 400px;
+            height: 2000px;
+            background-color: gray;
+            border-radius: 50% / 20%;
+            transform-origin: bottom left;
+            transform-style: preserve-3d;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px 0;
+            align-self: flex-start;
+            z-index: 1;
+        }
+
+        .seat-container {
+            margin-top: 350px;
+            margin-left: 8px;
+        }
+
+        .seat {
+            width: 50px;
+            height: 50px;
+            background-color: green;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            margin-right: 8px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            font-family: Calibri, sans-serif;
+        }
+
+        .seat:hover {
+            background-color: yellow;
+        }
+
+        .plane-fuselage:before,
+        .plane-fuselage:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 0;
+            height: 0;
+            transform: translateY(-50%);
+        }
+
+        .plane-fuselage:before {
+            border-top: 800px solid gray;
+            border-right: 400px solid transparent;
+            transform-origin: top;
+            transform: rotateX(180deg) rotateZ(90deg);
+            left: 0;
+        }
+
+        .plane-fuselage:after {
+            border-top: 800px solid gray;
+            border-left: 400px solid transparent;
+            transform-origin: top;
+            transform: rotateX(180deg) rotateZ(-90deg);
+            right: 0;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .empty-space {
+            width: 50px;
+        }
+
+        .plane-fuselage .row > *:not(.empty-space) {
+            flex-grow: 1;
+            flex-basis: 0;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="plane">
+    <div class="plane-fuselage">
+        <div class="seat-container">
+            <div class="row">
+                <div class="seat" th:attr="data-seat-number='1'">1</div>
+                <div class="seat" th:attr="data-seat-number='2'">2</div>
+                <div class="seat" th:attr="data-seat-number='3'">3</div>
+                <div class="empty-space"></div>
+                <div class="seat" th:attr="data-seat-number='4'">4</div>
+                <div class="seat" th:attr="data-seat-number='5'">5</div>
+                <div class="seat" th:attr="data-seat-number='6'">6</div>
+            </div>
+            <div class="row">
+                <div class="seat" th:attr="data-seat-number='7'">7</div>
+                <div class="seat" th:attr="data-seat-number='8'">8</div>
+                <div class="seat" th:attr="data-seat-number='9'">9</div>
+                <div class="empty-space"></div>
+                <div class="seat" th:attr="data-seat-number='10'">10</div>
+                <div class="seat" th:attr="data-seat-number='11'">11</div>
+                <div class="seat" th:attr="data-seat-number='12'">12</div>
+            </div>
+            <!-- Repeat the row structure for other rows -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('.seat').click(function() {
+            var seatNumber = $(this).data('seat-number');
+            console.log('Selected seat: ' + seatNumber);
+
+            $.ajax({
+                type: 'POST',
+                url: '/endpoint',
+                data: { seatNumber: seatNumber },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -2,11 +2,7 @@ package com.example.airlineticketservice.entity;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import static jakarta.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name="airport")
@@ -21,11 +17,11 @@ public class Airport {
 
     @OneToMany(mappedBy = "originAirport", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    List<Connections> connectionsOrigin;
+    List<Connection> connectionOrigin;
 
     @OneToMany(mappedBy = "destinationAirport", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    List<Connections> connectionsDestination;
+    List<Connection> connectionDestination;
 
     public Airport() {
     }

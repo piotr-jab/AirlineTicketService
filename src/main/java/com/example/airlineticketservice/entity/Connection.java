@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name="connections")
-public class Connections {
+public class Connection {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id")
@@ -29,10 +29,10 @@ public class Connections {
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     private Timestamp arrivalDate;
 
-    public Connections() {
+    public Connection() {
     }
 
-    public Connections(String id, Airport destinationAirport, Airport originAirport, Timestamp departureDate, Timestamp arrivalDate) {
+    public Connection(String id, Airport destinationAirport, Airport originAirport, Timestamp departureDate, Timestamp arrivalDate) {
         this.id = id;
         this.destinationAirport = destinationAirport;
         this.originAirport = originAirport;

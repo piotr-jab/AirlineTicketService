@@ -2,7 +2,7 @@ package com.example.airlineticketservice.service;
 
 import com.example.airlineticketservice.dao.ConnectionsRepository;
 import com.example.airlineticketservice.entity.Airport;
-import com.example.airlineticketservice.entity.Connections;
+import com.example.airlineticketservice.entity.Connection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,16 +10,16 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Service
-public class ConnectionsServiceImpl implements ConnectionsService{
+public class ConnectionServiceImpl implements ConnectionService {
     private ConnectionsRepository connectionsRepository;
 
     @Autowired
-    public ConnectionsServiceImpl(ConnectionsRepository connectionsRepository) {
+    public ConnectionServiceImpl(ConnectionsRepository connectionsRepository) {
         this.connectionsRepository = connectionsRepository;
     }
 
     @Override
-    public List<Connections> findAll() {
+    public List<Connection> findAll() {
         return connectionsRepository.findAll();
     }
 
@@ -34,7 +34,7 @@ public class ConnectionsServiceImpl implements ConnectionsService{
     }
 
     @Override
-    public List<Connections> findByOriginAirport(Airport originAirport) {
+    public List<Connection> findByOriginAirport(Airport originAirport) {
         return connectionsRepository.findByOriginAirport(originAirport);
     }
 
@@ -49,9 +49,9 @@ public class ConnectionsServiceImpl implements ConnectionsService{
     }
 
     @Override
-    public List<Connections> findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(Airport origAirport,
-                                                                                               Airport destAirport,
-                                                                                               String departureDay) {
+    public List<Connection> findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(Airport origAirport,
+                                                                                              Airport destAirport,
+                                                                                              String departureDay) {
         return connectionsRepository.findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(origAirport,
                 destAirport,
                 departureDay);
