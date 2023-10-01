@@ -1,32 +1,67 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Connection Search</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/webjars/jquery-ui/1.13.2/jquery-ui.min.css">
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
 </head>
 <body>
-<div class="container">
-  <h3>Connections Search</h3>
-  <button id="myButton" class="position-absolute top-0 end-0">Button</button>
-  <hr>
-  <form id="flightForm" action="/select" method="POST">
-    <label>Origin city:</label>
-    <select class="form-control selectpicker" name="originCity" th:id="originCity" required="required" th:nam>
-      <option value="Nothing selected">Nothing selected</option>
-      <option th:each="tempConnection : ${connections}" th:value="${tempConnection.icao}" th:text="${tempConnection.city}"></option>
-    </select>
-    <label>Destination city:</label>
-    <select class="form-control selectpicker" name="destinationCity" th:id="destinationCity" th:disabled=true>
-      <option value="Nothing selected">Please choose origin city first</option>
-    </select>
-    <hr>
-    <input type="text" th:id="flightDatepicker" name="flightDatepicker" th:name="flightDate" readonly th:disabled=true placeholder="Departure date">
-    <hr>
-    <button type="button" name="submitBtn" th:id="submitBtn" >Submit</button>
-  </form>
+<div class="top-bar">
+  Connections Search
+<!--  <div th:if="${#authorization.expression('isAuthenticated()')}">-->
+<!--    <div sec:authentication="principal.firstName"></div>-->
+<!--  </div>-->
+<!--  <span th:if="${#authorization.expression('isAuthenticated()')}" th:text="${#authentication.name}"></span>-->
+<!--  <span th:unless="${#authorization.expression('isAuthenticated()')}">Hello, stranger</span>-->
+  <div th:unless="${#authorization.expression('isAuthenticated()')}">
+    <a th:href="@{/login}">
+      <button class="button button-login">Log in</button>
+    </a>
+  </div>
+  <div class="top-button-container">
+    <div th:if="${#authorization.expression('isAuthenticated()')}">
+      <a th:href="@{/connections/userPage}">
+        <button class="button button-user-page">User page</button>
+      </a>
+      <form name="logoutForm" th:action="@{/logout}" method="post">
+        <button class="button button-logout">Log out</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="content-container time-table">
+  <div class="container">
+  <div th:if="${param.logout}" class="alert alert-success">
+    You have been logged out.
+  </div>
+  </div>
+  <div class="container">
+    <form id="flightForm" action="/selectFlight" method="POST">
+      <label>Origin city:</label>
+      <select class="form-control selectpicker" name="originCity" th:id="originCity" required="required" th:nam>
+        <option value="Nothing selected">Nothing selected</option>
+        <option th:each="tempConnection : ${connections}" th:value="${tempConnection.icao}" th:text="${tempConnection.city}"></option>
+      </select>
+      <label>Destination city:</label>
+      <select class="form-control selectpicker" name="destinationCity" th:id="destinationCity" th:disabled=true>
+        <option value="Nothing selected">Please choose origin city first</option>
+      </select>
+      <hr>
+      <div class="datepicker-container">
+        <input type="text" th:id="flightDatepicker" name="flightDatepicker" th:name="flightDate" readonly th:disabled=true placeholder="Departure date">
+      </div>
+<!--      <button type="button" name="submitBtn" th:id="submitBtn" >Submit</button>-->
+    </form>
+  </div>
+</div>
+
+<div class="button-container">
+  <button class="button button-back" disabled>Back</button>
+  <button class="button button-next" name="button-next" th:id="button-next" disabled>Next</button>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
@@ -44,11 +79,18 @@
   originCityDropdown.addEventListener('change', () => {
     updateDestinationCityDropdown();
     updateDatepickerSelection();
+    checkNextButtonStatus();
   });
 
   // Update the datepicker selection when the destination city changes
   destinationCityDropdown.addEventListener('change', () => {
     updateDatepickerSelection();
+    checkNextButtonStatus();
+  });
+
+  // Update the next button when date is chosen trough datepicker
+  $('#flightDatepicker').on('change', function() {
+    checkNextButtonStatus();
   });
 
   // Update the destination city dropdown based on the selected origin city
@@ -123,7 +165,21 @@
     }
   }
 
-  $('#submitBtn').on('click', function() {
+  //function to check if the Next button should be enabled or disabled
+  function checkNextButtonStatus() {
+    const destinationCityValue = destinationCityDropdown.value;
+    const selectedDate = $('#flightDatepicker').datepicker('getDate');
+
+    if (destinationCityValue !== "Nothing selected" && selectedDate !== null) {
+      // Enable the Next button if both the destination city and date are selected
+      $('#button-next').prop('disabled', false);
+    } else {
+      // Disable the Next button if either the destination city or date is not selected
+      $('#button-next').prop('disabled', true);
+    }
+  }
+
+  $('#button-next').on('click', function() {
     var originAirportIcao = $('#originCity').val();
     var destinationAirportIcao = $('#destinationCity').val();
     var selectedDate = $('#flightDatepicker').datepicker('getDate');
@@ -131,7 +187,7 @@
 
     if (originAirportIcao && destinationAirportIcao && flightDatepicker) {
       console.log(`Values: ${originAirportIcao}, ${destinationAirportIcao}, ${flightDatepicker}`);
-      window.location.href = `select?originAirportIcao=${originAirportIcao}&destinationAirportIcao=${destinationAirportIcao}&flightDate=${flightDatepicker}`;
+      window.location.href = `selectFlight?originAirportIcao=${originAirportIcao}&destinationAirportIcao=${destinationAirportIcao}&flightDate=${flightDatepicker}`;
     }
   });
 

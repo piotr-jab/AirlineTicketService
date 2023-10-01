@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 public class AirportServiceImpl implements AirportService{
-    private AirportRepository airportRepository;
+    private final AirportRepository airportRepository;
     @Autowired
     public AirportServiceImpl(AirportRepository airportRepository) {
         this.airportRepository = airportRepository;
@@ -22,7 +22,7 @@ public class AirportServiceImpl implements AirportService{
 
     public Airport findByCity(String city) {
         return this.airportRepository.findByCity(city);
-    };
+    }
 
     public Airport findByIcao(String icao) {
         return this.airportRepository.findByIcao(icao);

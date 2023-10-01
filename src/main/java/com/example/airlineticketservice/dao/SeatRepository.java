@@ -10,7 +10,8 @@ import java.util.List;
 
 public interface SeatRepository extends JpaRepository<Seat, SeatId> {
 
-    public List<Seat> findAllByPassenger(String username);
+    List<Seat> findAllByPassenger(User user);
 
-    public List<Seat> findSeatsByConnection(Connection connection);
+    List<Seat> findSeatsByConnection(Connection connection);
+
 }

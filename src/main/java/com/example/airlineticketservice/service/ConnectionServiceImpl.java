@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 public class ConnectionServiceImpl implements ConnectionService {
-    private ConnectionsRepository connectionsRepository;
+    private final ConnectionsRepository connectionsRepository;
 
     @Autowired
     public ConnectionServiceImpl(ConnectionsRepository connectionsRepository) {
@@ -49,11 +49,16 @@ public class ConnectionServiceImpl implements ConnectionService {
     }
 
     @Override
-    public List<Connection> findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(Airport origAirport,
+    public List<Connection> findByOriginAirportAndDestinationAirportAndDepartureDay(Airport origAirport,
                                                                                               Airport destAirport,
                                                                                               String departureDay) {
-        return connectionsRepository.findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(origAirport,
+        return connectionsRepository.findByOriginAirportAndDestinationAirportAndDepartureDay(origAirport,
                 destAirport,
                 departureDay);
+    }
+
+    @Override
+    public Connection findById(String id) {
+        return connectionsRepository.findConnectionById(id);
     }
 }

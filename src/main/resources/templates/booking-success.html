@@ -19,7 +19,7 @@
 <div class="container">
 
     <div class="top-bar">
-        <div>Are you sure?</div>
+        <div>Congratulations</div>
         <div th:unless="${#authorization.expression('isAuthenticated()')}">
             <a th:href="@{/login}">
                 <button class="button button-login">Log in</button>
@@ -39,31 +39,20 @@
 
     <div class="content-container">
         <div class="container">
+            <p><strong>You've booked flight for:</strong></p>
             <p><strong>Origin Airport:</strong> <span th:text="${connection.getOriginAirport().getCity()}"></span></p>
             <p><strong>Destination Airport:</strong> <span th:text="${connection.getDestinationAirport().getCity()}"></span></p>
-            <p><strong>Date:</strong> <span th:text="${#dates.format(connection.getDepartureDate(), 'dd-MM-yyyy')}"></span></p>
+            <p><strong>Date:</strong> <span th:text="${#dates.format(connection.getDepartureDate(), 'yyyy-MM-dd')}"></span></p>
             <p><strong>Time:</strong> <span th:text="${#dates.format(connection.getDepartureDate(), 'HH:mm')}"></span></p>
-            <p><strong>Seat:</strong> <span th:text="${selectedSeat}"></span></p>
-<!--            <p><strong>ConnectionId:</strong> <span th:text="${connection}"></span></p>-->
-<!--            <p><strong>User:</strong> <span th:text ="${#authentication.getName()}"></span></p>-->
+            <p><strong>Seat:</strong> <span th:text="${seatNumber}"></span></p>
+            <!--            <p><strong>ConnectionId:</strong> <span th:text="${connection}"></span></p>-->
+            <!--            <p><strong>User:</strong> <span th:text ="${#authentication.getName()}"></span></p>-->
         </div>
     </div>
 
     <div class="button-container">
-        <form method="post" action="/connections/selectSeat">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-            <input type="hidden" th:name="connectionId" th:value="${connection.getId()}"/>
-            <input type="hidden" th:name="selectedSeatPreviously" th:value="${selectedSeat}"/>
-
-            <button class="button button-back" type="submit">Back</button>
-        </form>
-        <form method="post" action="/connections/bookFlight">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-            <input type="hidden" th:name="connectionId" th:value="${connection.getId()}"/>
-            <input type="hidden" th:name="seatNumber" th:value="${selectedSeat}"/>
-
-            <button class="button button-next" type="submit">Next</button>
-        </form>
+        <button class="button button-back" type="submit" disabled>Back</button>
+        <button class="button button-next" type="submit" disabled>Next</button>
     </div>
 
 </div>

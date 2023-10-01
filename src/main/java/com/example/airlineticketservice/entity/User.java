@@ -7,14 +7,16 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="users")
-public class User {
+public class User{
     @Id
     @Column(name = "username")
     private String username;
+    @Column(name = "password")
+    private String password;
     @Column(name = "enabled")
     private int enabled;
     @Column(name = "name")
-    private String name;
+    private String firstName;
     @Column(name = "surname")
     private String surname;
     @Column(name = "gender")
@@ -23,10 +25,11 @@ public class User {
     public User() {
     }
 
-    public User(String username, int enabled, String name, String surname, String gender) {
+    public User(String username, String password, int enabled, String firstName, String surname, String gender) {
         this.username = username;
+        this.password = password;
         this.enabled = enabled;
-        this.name = name;
+        this.firstName = firstName;
         this.surname = surname;
         this.gender = gender;
     }
@@ -39,6 +42,14 @@ public class User {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public int getEnabled() {
         return enabled;
     }
@@ -47,12 +58,12 @@ public class User {
         this.enabled = enabled;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getSurname() {
@@ -69,5 +80,17 @@ public class User {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
+                ", firstName='" + firstName + '\'' +
+                ", surname='" + surname + '\'' +
+                ", gender='" + gender + '\'' +
+                '}';
     }
 }

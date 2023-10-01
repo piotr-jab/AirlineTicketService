@@ -1,7 +1,6 @@
 package com.example.airlineticketservice.entity;
 
 import jakarta.persistence.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @IdClass(SeatId.class)
@@ -18,7 +17,7 @@ public class Seat {
     private String seatNumber;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "passenger")
     private User passenger;
 
     public Seat() {
@@ -52,5 +51,14 @@ public class Seat {
 
     public void setPassenger(User passenger) {
         this.passenger = passenger;
+    }
+
+    @Override
+    public String toString() {
+        return "Seat{" +
+                "connection=" + connection +
+                ", seatNumber='" + seatNumber + '\'' +
+                ", passenger=" + passenger +
+                '}';
     }
 }

@@ -79,5 +79,16 @@ public class Connection {
     public void setArrivalDate(Timestamp arrivalDate) {
         this.arrivalDate = arrivalDate;
     }
+
+    @Override
+    public String toString() {
+        return "Connection{" +
+                "id='" + id + '\'' +
+                ", destinationAirport=" + destinationAirport +
+                ", originAirport=" + originAirport +
+                ", departureDate=" + departureDate +
+                ", arrivalDate=" + arrivalDate +
+                '}';
+    }
 }
 

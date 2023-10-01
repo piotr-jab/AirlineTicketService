@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AirportRepository extends JpaRepository<Airport, String> {
-    public List<Airport> findAllByOrderByCityAsc();
+    List<Airport> findAllByOrderByCityAsc();
 
-    public Airport findByCity(String city);
+    Airport findByCity(String city);
 
-    public Airport findByIcao(String icao);
+    Airport findByIcao(String icao);
 
 }

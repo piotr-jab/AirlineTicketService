@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <title>Confirmation</title>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="top-bar">
+        <div>Congratulations</div>
+        <div th:unless="${#authorization.expression('isAuthenticated()')}">
+            <a th:href="@{/login}">
+                <button class="button button-login">Log in</button>
+            </a>
+        </div>
+        <div class="top-button-container">
+            <div th:if="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/connections/userPage}">
+                    <button class="button button-user-page">User page</button>
+                </a>
+                <form name="logoutForm" th:action="@{/logout}" method="post">
+                    <button class="button button-logout">Log out</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <div class="container">
+            <p><strong>Something went wrong.</strong></p>
+            <p><strong>By clicking Back button you will be redirected to the flight search page.</strong></p>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <a th:href="@{/connections/search}">
+            <button class="button button-back" type="submit">Back</button>
+        </a>
+        <button class="button button-next" type="submit" disabled>Next</button>
+    </div>
+
+</div>
+
+</body>
+
+</html>

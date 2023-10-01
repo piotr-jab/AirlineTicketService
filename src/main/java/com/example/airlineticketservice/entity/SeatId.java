@@ -30,4 +30,12 @@ public class SeatId implements Serializable {
     public void setSeatNumber(String seatNumber) {
         this.seatNumber = seatNumber;
     }
+
+    @Override
+    public String toString() {
+        return "SeatId{" +
+                "connection=" + connection +
+                ", seatNumber='" + seatNumber + '\'' +
+                '}';
+    }
 }

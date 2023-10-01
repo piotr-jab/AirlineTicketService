@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+  head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User page</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/webjars/jquery-ui/1.13.2/jquery-ui.min.css">
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+
+<body>
+
+  <div class="top-bar">
+<!--    <button class="button button-login">Log in</button>-->
+<!--    <div th:text="'Hello ' + ${#authentication.name} + ', here are your flights"></div>-->
+    <div th:inline="text">
+      Hello [[${#authentication.principal.firstName}]], here are your flights
+    </div>
+    <div class="top-button-container">
+      <div th:if="${#authorization.expression('isAuthenticated()')}">
+        <a th:href="@{/connections/search}">
+          <button class="button button-user-page" style="width: 140px">Flight search</button>
+        </a>
+        <form name="logoutForm" th:action="@{/logout}" method="post">
+          <button class="button button-logout">Log out</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-container">
+    <div class="container">
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+          <th>Date</th>
+          <th>From</th>
+          <th>Departure time</th>
+          <th>To</th>
+          <th>Arrival time</th>
+          <th>Seat number</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="seat : ${seats}">
+          <td th:text="${#dates.format(seat.getConnection().getDepartureDate(), 'yyyy-MM-dd')}"></td>
+          <td th:text="${seat.getConnection().getOriginAirport().getCity()}"></td>
+          <td th:text="${#dates.format(seat.getConnection().getDepartureDate(), 'HH:mm')}"></td>
+          <td th:text="${seat.getConnection().getDestinationAirport().getCity()}"></td>
+          <td th:text="${#dates.format(seat.getConnection().getArrivalDate(), 'HH:mm')}"></td>
+          <td th:text="${seat.getSeatNumber()}"></td>
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <title>Flight times</title>
+</head>
+
+<body>
+
+<div class="top-bar">
+    <div th:text="'Flight from ' + ${connections[0].getOriginAirport().getCity()} + ' to ' + ${connections[0].getDestinationAirport().getCity()} + ' on ' + ${#dates.format(connections[0].getDepartureDate(), 'dd-MM-yyyy')}"></div>
+    <div th:unless="${#authorization.expression('isAuthenticated()')}">
+        <a th:href="@{/login}">
+            <button class="button button-login">Log in</button>
+        </a>
+    </div>
+    <div class="top-button-container">
+        <div th:if="${#authorization.expression('isAuthenticated()')}">
+            <a th:href="@{/connections/userPage}">
+                <button class="button button-user-page">User page</button>
+            </a>
+            <form name="logoutForm" th:action="@{/logout}" method="post">
+                <button class="button button-logout">Log out</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="content-container time-table">
+    <div class="container">
+        <hr>
+
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+            <tr>
+                <th>Departure</th>
+                <th>Arrival</th>
+                <th> </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="connection, rowIdx : ${connections}">
+                <td th:text="${#dates.format(connection.getDepartureDate(), 'HH:mm')}"></td>
+                <td th:text="${#dates.format(connection.getArrivalDate(), 'HH:mm')}"></td>
+                <td>
+                    <form th:action="@{/connections/selectSeat}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <input type="hidden" th:name="connectionId" th:value="${connection.getId()}" />
+                        <button type="button" class="btn btn-primary btn-sm select-button" data-row-index="${rowIdx.index}">Select</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="button-container">
+    <a th:href="@{/connections/search}" class="button button-back">Back</a>
+    <button class="button button-next" name="button-next" th:id="button-next" th:disabled="true">Next</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        let selectedForm = null;
+
+        $('.select-button').on('click', function () {
+            // Remove orange color from any previously selected button
+            if (selectedForm !== null) {
+                selectedForm.find('.select-button').removeClass('selected-button');
+            }
+
+            // Add orange color to the clicked button and store the form
+            $(this).addClass('selected-button');
+            selectedForm = $(this).closest('form');
+
+            $('#button-next').prop('disabled', false);
+        });
+
+        $('#button-next').on('click', function () {
+            // Trigger the form submission when the "Next" button is clicked
+            if (selectedForm !== null) {
+                selectedForm.submit();
+            }
+        });
+    });
+</script>
+
+</body>
+
+</html>

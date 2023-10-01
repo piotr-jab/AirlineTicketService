@@ -7,15 +7,17 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface ConnectionService {
-    public List<Connection> findAll();
-    public List<Airport> findAllByCity();
-    public List<Airport> findDistinctBy();
-    public List<Connection> findByOriginAirport(Airport originAirport);
+    List<Connection> findAll();
+    List<Airport> findAllByCity();
+    List<Airport> findDistinctBy();
+    List<Connection> findByOriginAirport(Airport originAirport);
 
-    public List<Airport> findDestAirportByOrigAirport(Airport originAirport);
+    List<Airport> findDestAirportByOrigAirport(Airport originAirport);
 
-    public List<Timestamp> findFlightDateByOrigAndDestAirport(Airport origAirport, Airport destAirport);
+    List<Timestamp> findFlightDateByOrigAndDestAirport(Airport origAirport, Airport destAirport);
 
-    public List<Connection> findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(Airport origAirport, Airport destAirport, String departureDay);
+    List<Connection> findByOriginAirportAndDestinationAirportAndDepartureDay(Airport origAirport, Airport destAirport, String departureDay);
+
+    Connection findById(String id);
 
 }

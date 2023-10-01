@@ -1,29 +1,39 @@
 package com.example.airlineticketservice.controller;
 
-import com.example.airlineticketservice.entity.Airport;
-import com.example.airlineticketservice.entity.Connection;
+import com.example.airlineticketservice.entity.*;
 import com.example.airlineticketservice.service.AirportService;
 import com.example.airlineticketservice.service.ConnectionService;
+import com.example.airlineticketservice.service.SeatService;
+import com.example.airlineticketservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/connections")
 public class ConnectionController {
-    private ConnectionService connectionService;
-    private AirportService airportService;
+    private final ConnectionService connectionService;
+    private final AirportService airportService;
+    private final SeatService seatService;
+    private final UserService userService;
 
     @Autowired
-    public ConnectionController(ConnectionService connectionService, AirportService airportService) {
+    public ConnectionController(ConnectionService connectionService,
+                                AirportService airportService,
+                                SeatService seatService,
+                                UserService userService) {
         this.connectionService = connectionService;
         this.airportService = airportService;
+        this.seatService = seatService;
+        this.userService = userService;
     }
 
     @GetMapping("/search")
@@ -36,21 +46,7 @@ public class ConnectionController {
 
     @GetMapping("/getDestinationAirport")
     public @ResponseBody List<Airport> getDestinationAirports(@RequestParam("originCityName") String originAirportIcao) {
-        List<Airport> destinationAirports = connectionService.findDestAirportByOrigAirport(airportService.findByIcao(originAirportIcao));
-        return destinationAirports;
-    }
-
-    //for deletion if getDestinationAirport works
-    @GetMapping("/getDestinationCity")
-    public @ResponseBody List<String> getDestinationCity(@RequestParam("originCityName") String originCityName) {
-        List<Airport> originAirports = connectionService.findDestAirportByOrigAirport(airportService.findByCity(originCityName));
-        List<String> cities = new ArrayList<>();
-
-        for (Airport tempAirport:originAirports) {
-            cities.add(tempAirport.getCity());
-        }
-
-        return cities;
+        return connectionService.findDestAirportByOrigAirport(airportService.findByIcao(originAirportIcao));
     }
 
     @GetMapping("/getFlightDates")
@@ -68,57 +64,95 @@ public class ConnectionController {
         return result;
     }
 
-    @GetMapping("/select")
-    public String confirm(@RequestParam("originAirportIcao") String originAirportIcao,
-                          @RequestParam("destinationAirportIcao") String destinationAirportIcao,
-                          @RequestParam("flightDate") String flightDate,
-                          Model model) {
+    @GetMapping("/selectFlight")
+    public String showFlightSelectionPage(Model model,
+                                          @RequestParam("originAirportIcao") String originAirportIcao,
+                                          @RequestParam("destinationAirportIcao") String destinationAirportIcao,
+                                          @RequestParam("flightDate") String flightDate
+                                          ) {
 
         Airport originAirportObject = airportService.findByIcao(originAirportIcao);
         Airport destinationAirportObject = airportService.findByIcao(destinationAirportIcao);
-        List<Connection> connections = connectionService.findFlightDateByOriginAirportAndDestinationAirportAndDepartureDay(originAirportObject, destinationAirportObject, flightDate);
+        List<Connection> connections = connectionService.findByOriginAirportAndDestinationAirportAndDepartureDay(originAirportObject, destinationAirportObject, flightDate);
 
-        List<List<String>> flightTimes = new ArrayList<>();
-        String dateFormat = "HH:mm";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-
-        for (Connection tempConnection :connections) {
-            flightTimes.add(new ArrayList<>(){
-                {
-                    add(formatter.format(tempConnection.getDepartureDate().toLocalDateTime()));
-                    add(formatter.format(tempConnection.getArrivalDate().toLocalDateTime()));
-                }
-            });
-        }
-
-        model.addAttribute("originAirportCity", originAirportObject.getCity());
-        model.addAttribute("destinationAirportCity", destinationAirportObject.getCity());
-        model.addAttribute("originAirportIcao", originAirportObject.getIcao());
-        model.addAttribute("destinationAirportIcao", destinationAirportObject.getIcao());
-        model.addAttribute("flightDate", flightDate);
-        model.addAttribute("flightTimes", flightTimes);
-        return "selection";
+        model.addAttribute("connections", connections);
+        return "flight-selection";
     }
 
+    @PostMapping("/selectSeat")
+    public String showSeatSelectionPage(Model model,
+                                        @RequestParam("connectionId") String connectionId,
+                                        @RequestParam("selectedSeatPreviously") Optional<String> selectedSeatPreviously) {
+
+        Connection connection = connectionService.findById(connectionId);
+        model.addAttribute("seatArrangement", seatService.getSeatNumbering(connection));
+        model.addAttribute("connection", connection);
+        model.addAttribute("selectedSeatPreviously", selectedSeatPreviously.orElse("empty"));
+        return "seat-selection";
+    }
 
     @PostMapping("/confirm")
     public String showConfirmationPage(Model model,
-                                       @RequestParam("originAirportCity") String originAirportCity,
-                                       @RequestParam("destinationAirportCity") String destinationAirportCity,
-                                       @RequestParam("flightDate") String flightDate,
-                                       @RequestParam("selectedFlightTime") String selectedFlightTime,
-                                       @RequestParam("originAirportIcao") String originAirportIcao,
-                                       @RequestParam("destinationAirportIcao") String destinationAirportIcao) {
+                                       @RequestParam("connectionId") String connectionId,
+                                       @RequestParam("selectedSeat") String selectedSeat){
 
-        // Pass the received data to the confirmation page
-        model.addAttribute("originAirportCity", originAirportCity);
-        model.addAttribute("destinationAirportCity", destinationAirportCity);
-        model.addAttribute("flightDate", flightDate);
-        model.addAttribute("selectedFlightTime", selectedFlightTime);
-        model.addAttribute("originAirportIcao", originAirportIcao);
-        model.addAttribute("destinationAirportIcao", destinationAirportIcao);
+        Connection connection = connectionService.findById(connectionId);
 
-
+        model.addAttribute("connection", connection);
+        model.addAttribute("selectedSeat", selectedSeat);
         return "confirmation";
+    }
+
+    @PostMapping("/bookFlight")
+    public String bookFlight(Model model,
+                             @RequestParam("connectionId") String connectionId,
+                             @RequestParam("seatNumber") String seatNumber){
+
+        Connection connection = connectionService.findById(connectionId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String passenger = authentication.getName();
+
+        //check if seat number is free
+        List<Seat> seats = seatService.findSeatsByConnection(connection);
+
+        model.addAttribute("connection", connection);
+        model.addAttribute("seatNumber", seatNumber);
+
+        for (Seat seat : seats) {
+            if(seat.getSeatNumber().equals(seatNumber)) {
+                return "booking-failure";
+            }
+        }
+        //find passenger and book seat (future check for eligibility)
+        Optional<User> optionalUser = userService.findByUsername(passenger);
+        return optionalUser.map(user -> {
+            seatService.save(new Seat(new SeatId(connection, seatNumber), connection, seatNumber, user));
+            return "booking-success";
+        }).orElse("booking-failure");
+
+    }
+
+
+    @GetMapping("/userPage")
+    public String showUserPage(Model model
+    ) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        Optional<User> optionalUser = userService.findByUsername(username);
+        User user = optionalUser.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        List<Seat> seats = seatService.findAllSeatsByUser(user);
+        seats.sort(Comparator.comparing(seat -> seat.getConnection().getDepartureDate()));
+
+        model.addAttribute("seats", seats);
+
+        return "user-page";
+    }
+
+    @GetMapping("/login")
+    public String viewLoginPage(){
+        return "login-form";
     }
 }

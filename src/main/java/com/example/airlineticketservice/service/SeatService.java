@@ -7,8 +7,12 @@ import com.example.airlineticketservice.entity.User;
 import java.util.List;
 
 public interface SeatService {
-    public List<Seat> findAllByPassenger(String username);
+    List<Seat> findAllSeatsByUser(User user);
 
-    public List<Seat> findSeatsByConnection(Connection connection);
+    List<Seat> findSeatsByConnection(Connection connection);
+
+    List<List<List<String>>> getSeatNumbering(Connection connection);
+
+    void save(Seat seat);
 
 }

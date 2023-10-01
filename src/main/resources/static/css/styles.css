@@ -1,0 +1,303 @@
+.top-bar, .button-container {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background-color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    font-family: Calibri, sans-serif;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.top-bar {
+    top: 0;
+    font-size: 30px;
+}
+
+.button-container {
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.top-button-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.button {
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    font-family: Calibri, sans-serif;
+}
+
+.button-back {
+    background-color: red;
+    text-decoration: none;
+    width: 110px;
+}
+
+.button-back:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.button-back[disabled] {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: default;
+}
+
+.button-back[disabled]:hover {
+    background-color: #e9ecef;
+    color: #6c757d;
+}
+
+.button-next {
+    background-color: green;
+    width: 110px;
+}
+
+.button-next[disabled] {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: default;
+}
+
+.button-next[disabled]:hover {
+    background-color: #e9ecef;
+    color: #6c757d;
+}
+
+.button:hover {
+    background-color: orange;
+}
+
+.button-login {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    font-family: Calibri, sans-serif;
+    background-color: blue;
+    width: 120px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.button-login:hover {
+    background-color: darkblue;
+}
+
+.button-logout {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    font-family: Calibri, sans-serif;
+    background-color: red;
+    width: 120px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.button-logout:hover {
+    background-color: darkred;
+}
+
+.button-user-page {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s;
+    font-family: Calibri, sans-serif;
+    background-color: green;
+    margin-right: 125px;
+    width: 120px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.button-user-page:hover {
+    background-color: darkgreen;
+}
+
+.plane {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*height: 2100px;*/
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    /*padding-bottom: 150px;*/
+}
+
+.plane-fuselage {
+    width: 420px;
+    height: calc(100% + 450px);
+    background-color: gray;
+    border-radius: 70% / 20%;
+    transform-origin: bottom left;
+    transform-style: preserve-3d;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0;
+    align-self: flex-start;
+    z-index: 1;
+    padding-bottom: 300px;
+}
+
+.seat-container {
+    margin-top: 250px;
+    margin-left: 8px;
+}
+
+.seat {
+    width: 50px;
+    height: 50px;
+    background-color: #0047ab;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    margin-right: 8px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: Calibri, sans-serif;
+}
+
+.seat:hover {
+    background-color: orange;
+}
+
+.seat-selected {
+    background-color: green;
+}
+
+.seat[taken="true"] {
+    background-color: lightgray;
+    cursor: default;
+}
+
+.selected-seat-container {
+    position: fixed;
+    top: 50%;
+    left: 25px;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    font-family: Calibri, sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+    display: none;
+    z-index: 998;
+}
+
+
+.plane-fuselage:before,
+.plane-fuselage:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 0;
+    height: 0;
+    transform: translateY(-50%);
+}
+
+.plane-fuselage:before {
+    border-top: 1600px solid gray;
+    border-right: 400px solid transparent;
+    transform-origin: top;
+    transform: rotateX(180deg) rotateZ(90deg);
+    left: 0;
+}
+
+.plane-fuselage:after {
+    border-top: 1600px solid gray;
+    border-left: 400px solid transparent;
+    transform-origin: top;
+    transform: rotateX(180deg) rotateZ(-90deg);
+    right: 0;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.empty-space {
+    width: 50px;
+}
+
+.plane-fuselage .row > *:not(.empty-space) {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.content-container {
+    margin-top: 100px;
+}
+
+.time-table table {
+    margin-top: 20px;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.time-table th,
+.time-table td {
+    width: 50%;
+}
+
+.datepicker-container {
+    position: relative;
+    z-index: 9999; /* Make sure the container is above other elements */
+}
+
+/* Style for the datepicker itself */
+.ui-datepicker {
+    position: absolute;
+    top: 100%; /* Position it below the container */
+    left: 0;
+    z-index: 9999; /* Make sure the datepicker is above other elements */
+}
+
+.select-button.selected-button {
+    background-color: orange;
+}
