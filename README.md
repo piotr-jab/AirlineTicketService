@@ -25,7 +25,7 @@ It gave me a chance to try other technologies, such as JavaScript, in a practica
 <img src="src\main\resources\static\images\README\showcase.gif" alt="Gif showcasing project">
 
 ## Features
-- MySQL script to generate sample data. It creates 5000 connections for the next 3 months
+- MySQL script to generate sample data. It creates 5000 connections for the next 3 months.
   <br /><img  src="src\main\resources\static\images\README\db_schema.png" width=600>
 - AJAX for dynamic webpage content (dropdown lists etc.)
 - Custom Spring Security configuration to better suit this project (custom user data)
