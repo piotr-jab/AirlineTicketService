@@ -1,5 +1,5 @@
 # Airline Ticket Service
-> My take on ticketing service using Spring an MySQL
+My proposal for a site that sells airline tickets
 
 ## Table of Contents
 * [General Info](#general-information)
