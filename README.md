@@ -15,7 +15,7 @@ It gave me a chance to try other technologies, such as JavaScript, in a practica
 ## Technologies Used
 - Java
 - Spring Boot
-- Hibernate
+- Spring Data JPA
 - MySQL
 - Spring Security
 - Thymeleaf
